@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030308">
+<title>Solin ♾️</title>
+<style>
+*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030308;color:#f4f0ff;font-family:Tahoma,Arial,sans-serif}
+body{background:radial-gradient(ellipse at 50% 46%,#151124 0%,#080710 42%,#020205 100%)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.shade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.62) 100%)}
+.content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:5px;color:#c7b5ff;opacity:.8;margin-bottom:12px}
+h1{font-size:clamp(32px,8vw,62px);font-weight:400;letter-spacing:2px;margin:0;text-shadow:0 0 22px #9e72ff}
+.sub{font-size:clamp(14px,3.5vw,18px);color:#d7cbed;margin-top:12px;line-height:2}
+.heart{font-size:22px;margin-top:22px;filter:drop-shadow(0 0 12px #b68cff);animation:pulse 2s infinite}
+.hint{position:absolute;bottom:26px;font-size:11px;color:#8f879e;letter-spacing:2px}
+button{pointer-events:auto;position:absolute;bottom:62px;border:1px solid #a78bfa66;background:#17102299;color:#f5eaff;padding:11px 22px;border-radius:30px;font-size:13px;backdrop-filter:blur(10px)}
+button:active{transform:scale(.97)}
+@keyframes pulse{50%{transform:scale(1.2);opacity:.75}}
+@media(min-width:700px){.content{justify-content:center}}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas><div class="shade"></div>
+<main class="content">
+  <div class="eyebrow">A LITTLE UNIVERSE, JUST FOR YOU</div>
+  <h1>Solin ♡</h1>
+  <div class="sub">تۆ جوانترین بەشی هەموو گەردوونەکەمی.<br>هەتا بێکۆتایی… ♾️</div>
+  <div class="heart">🤍</div>
+  <button id="sound">♪ دەنگی ئارام چالاک بکە</button>
+  <div class="hint">SCROLL THROUGH MY UNIVERSE · ♾</div>
+</main>
+<script>
+const c=document.getElementById('scene'),x=c.getContext('2d');let w,h,dpr,stars=[],t=0;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';x.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.floor(w*h/2300)},()=>({x:Math.random()*w,y:Math.random()*h,z:Math.random()*1.5+.3,p:Math.random()*6.28}))}
+addEventListener('resize',resize);resize();
+function loop(){t+=.008;x.clearRect(0,0,w,h);
+  for(const s of stars){let a=.25+.55*(.5+.5*Math.sin(t*2+s.p));x.fillStyle=`rgba(211,190,255,${a})`;x.fillRect(s.x,s.y,s.z,s.z)}
+  const cx=w/2,cy=h*.49,scale=Math.min(w*.31,h*.205),rot=t*.18;
+  x.save();x.translate(cx,cy);x.rotate(rot);
+  // glowing infinity made from many tiny ASCII-like glyphs
+  const chars='01{}[]<>/\\+=*#';
+  for(let i=0;i<1100;i++){let a=i/1100*Math.PI*2;let den=1+Math.cos(a)*Math.cos(a);let px=scale*Math.cos(a)/den;let py=scale*.52*Math.sin(a)*Math.cos(a)/den;
+    let shimmer=.55+.45*Math.sin(t*3+i*.07);x.font=`${8+shimmer*2}px monospace`;x.fillStyle=`rgba(${190+Math.floor(shimmer*60)},${165+Math.floor(shimmer*45)},255,${.48+shimmer*.5})`;x.shadowColor='#a77bff';x.shadowBlur=5;x.fillText(chars[(i+Math.floor(t*20))%chars.length],px,py)}
+  // orbital sparks
+  for(let j=0;j<8;j++){let a=t*1.2+j*Math.PI/4;let den=1+Math.cos(a)*Math.cos(a);let px=scale*Math.cos(a)/den,py=scale*.52*Math.sin(a)*Math.cos(a)/den;x.beginPath();x.arc(px,py,2.1,0,Math.PI*2);x.fillStyle='#fff';x.shadowBlur=15;x.shadowColor='#c9a6ff';x.fill()}
+  x.restore();requestAnimationFrame(loop)}
+loop();
+// Optional gentle synthesized ambient tones; starts only after a tap.
+let audio=null,playing=false;
+document.getElementById('sound').addEventListener('click',()=>{try{if(!audio){audio=new (window.AudioContext||window.webkitAudioContext)();let osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.value=110;gain.gain.value=.012;osc.connect(gain);gain.connect(audio.destination);osc.start()}playing=!playing;audio.resume();document.querySelector('#sound').textContent=playing?'♪ دەنگی ئارام چالاکە':'♪ دەنگی ئارام چالاک بکە';}catch(e){document.querySelector('#sound').textContent='دەنگ لەم ئامێرەدا بەردەست نییە'}});
+</script>
+</body></html>
